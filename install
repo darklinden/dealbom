@@ -1,6 +1,2 @@
 #!/bin/bash -l
-rm -rf /usr/local/bin/dealbom
-rm -rf /usr/local/bin/dealbom.py
-
-cp dealbom /usr/local/bin
-cp dealbom.py /usr/local/bin
+python dealbom.py install

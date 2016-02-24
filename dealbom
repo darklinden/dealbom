@@ -1,2 +1,0 @@
-#!/bin/bash -l
-python "/usr/local/bin/dealbom.py" "$@"
