@@ -40,13 +40,15 @@ def self_install(file, des):
     to_path = os.path.join(des, filename)
 
     print("installing [" + file_path + "] \n\tto [" + to_path + "]")
-    os.remove(to_path)
+    if os.path.isfile(to_path):
+        os.remove(to_path)
     shutil.copy(file_path, to_path)
     run_cmd(['chmod', 'a+x', to_path])
 
 def file_is_src(file_path):
     filename, file_extension = os.path.splitext(file_path)
-    if file_extension == '.c' or file_extension == '.cc' or file_extension == '.cpp' or file_extension == '.h' or file_extension == '.hpp':
+    file_extension = file_extension.lower()
+    if file_extension == '.c' or file_extension == '.cc' or file_extension == '.cpp' or file_extension == '.h' or file_extension == '.hpp' or file_extension == '.txt' or file_extension == '.m' or file_extension == '.mm' or file_extension == '.js' or file_extension == '.lua':
         return True
     else:
         return False
@@ -170,7 +172,7 @@ def __main__():
         return
 
     if len(sys.argv) != 3:
-        print("using dealbom [a: add prgma; r: remove pragma; u: convert utf-8; b: convert utf-8-sig; fb: force add bom and pragma; fu: force remove bom and pragma] [file or folder path] to add or remove bom")
+        print("using dealbom \n\t[\n\ta: add pragma; \n\tr: remove pragma; \n\tu: convert utf-8; \n\tb: convert utf-8-sig; \n\tfb: force add bom and pragma; \n\tfu: force remove bom and pragma\n\t]\n\t[file or folder path] to add or remove bom")
         return
 
     param_cmd = sys.argv[1]
