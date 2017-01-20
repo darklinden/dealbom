@@ -48,17 +48,20 @@ def self_install(file, des):
 def file_is_src(file_path):
     filename, file_extension = os.path.splitext(file_path)
     file_extension = file_extension.lower()
-    if file_extension == '.c' or file_extension == '.cc' or file_extension == '.cpp' or file_extension == '.h' or file_extension == '.hpp' or file_extension == '.txt' or file_extension == '.m' or file_extension == '.mm' or file_extension == '.js' or file_extension == '.lua':
+    if file_extension == '.c' or file_extension == '.cc' or file_extension == '.cpp' or file_extension == '.h' or file_extension == '.hpp' or file_extension == '.txt' or file_extension == '.m' or file_extension == '.mm' or file_extension == '.js' or file_extension == '.lua' or file_extension == '.java':
         return True
     else:
         return False
 
-def convert_encoding(file_path, des_encoding):
+def convert_encoding(file_path, des_encoding, param_encoding):
     convertFile = open(file_path, 'rb')
     data = convertFile.read(1024 * 10)
     convertFile.close()
 
-    src_encoding = chardet.detect(data)['encoding']
+    if param_encoding != "":
+        src_encoding = param_encoding
+    else:
+        src_encoding = chardet.detect(data)['encoding']
 
     if src_encoding == des_encoding:
         return
@@ -171,12 +174,15 @@ def __main__():
         self_install("dealbom.py", "/usr/local/bin")
         return
 
-    if len(sys.argv) != 3:
+    if len(sys.argv) < 3:
         print("using dealbom \n\t[\n\ta: add pragma; \n\tr: remove pragma; \n\tu: convert utf-8; \n\tb: convert utf-8-sig; \n\tfb: force add bom and pragma; \n\tfu: force remove bom and pragma\n\t]\n\t[file or folder path] to add or remove bom")
         return
 
     param_cmd = sys.argv[1]
     param_path = sys.argv[2]
+    param_encode = ""
+    if len(sys.argv) > 3:
+        param_encode = sys.argv[3]
 
     if os.path.isfile(param_path):
         if not file_is_src(param_path):
@@ -184,15 +190,15 @@ def __main__():
             return
 
         if param_cmd == 'a':
-            convert_encoding(param_path, EN_UTF8)
+            convert_encoding(param_path, EN_UTF8, param_encode)
             add_pragma(param_path)
         elif param_cmd == 'r':
-            convert_encoding(param_path, EN_UTF8)
+            convert_encoding(param_path, EN_UTF8, param_encode)
             remove_pragma(param_path)
         elif param_cmd == 'u':
-            convert_encoding(param_path, EN_UTF8)
+            convert_encoding(param_path, EN_UTF8, param_encode)
         elif param_cmd == 'b':
-            convert_encoding(param_path, EN_UTF8_BOM)
+            convert_encoding(param_path, EN_UTF8_BOM, param_encode)
         elif param_cmd == 'fb':
             add_pragma(param_path)
             add_bom(param_path)
@@ -212,15 +218,15 @@ def __main__():
                         continue
 
                     if param_cmd == 'a':
-                        convert_encoding(file_path, EN_UTF8)
+                        convert_encoding(file_path, EN_UTF8, param_encode)
                         add_pragma(file_path)
                     elif param_cmd == 'r':
-                        convert_encoding(file_path, EN_UTF8)
+                        convert_encoding(file_path, EN_UTF8, param_encode)
                         remove_pragma(file_path)
                     elif param_cmd == 'u':
-                        convert_encoding(file_path, EN_UTF8)
+                        convert_encoding(file_path, EN_UTF8, param_encode)
                     elif param_cmd == 'b':
-                        convert_encoding(file_path, EN_UTF8_BOM)
+                        convert_encoding(file_path, EN_UTF8_BOM, param_encode)
                     elif param_cmd == 'fb':
                         add_pragma(file_path)
                         add_bom(file_path)
